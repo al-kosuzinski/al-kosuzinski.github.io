@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Protocolo do Dinheiro</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --emerald: #0F3B2E; --green: #1F6F4A;
+    --gold: #C9A227; --gold-light: #E6C35A;
+    --black: #0B0B0B; --offwhite: #F4F1E8;
+  }
+  html { scroll-behavior: smooth; }
+  body { background: var(--black); color: var(--offwhite); font-family: 'Montserrat', sans-serif; font-size: 16px; line-height: 1.75; overflow-x: hidden; }
+
+  #particles { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; overflow: hidden; }
+  .particle { position: absolute; border-radius: 50%; background: var(--gold-light); opacity: 0; animation: float linear infinite; }
+  @keyframes float {
+    0% { transform: translateY(100vh) scale(0); opacity: 0; }
+    10% { opacity: 0.4; } 90% { opacity: 0.15; }
+    100% { transform: translateY(-10vh) scale(1); opacity: 0; }
+  }
+
+  .divider { width: 100%; height: 1px; background: linear-gradient(90deg, transparent, var(--gold), transparent); opacity: 0.5; }
+
+  /* BANNER */
+  .banner-top { position: relative; z-index: 1; width: 100%; overflow: hidden; background: var(--black); }
+  .banner-top img { width: 100%; max-width: 800px; height: auto; max-height: 600px; object-fit: cover; display: block; margin: 0 auto; }
+  .banner-top::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 140px; background: linear-gradient(to bottom, transparent, var(--black)); pointer-events: none; }
+
+  /* HERO */
+  .hero { display: flex; flex-direction: column; align-items: center; text-align: center; padding: 48px 24px 80px; position: relative; z-index: 1; max-width: 100%; }
+  .hero::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 600px; height: 400px; background: radial-gradient(ellipse, rgba(31,111,74,0.16) 0%, transparent 70%); pointer-events: none; }
+  .badge { display: inline-block; border: 1px solid rgba(201,162,39,0.4); color: var(--gold-light); font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; padding: 8px 20px; border-radius: 50px; margin-bottom: 28px; }
+  .hero h1 { font-family: 'Cormorant Garamond', serif; font-size: clamp(42px, 8vw, 72px); font-weight: 700; line-height: 1.1; color: var(--offwhite); margin-bottom: 16px; }
+  .hero h1 span { color: var(--gold-light); }
+  .hero .subtitle { font-family: 'Cormorant Garamond', serif; font-size: clamp(16px, 3vw, 22px); font-style: italic; color: rgba(244,241,232,0.7); margin-bottom: 32px; max-width: 560px; }
+  .dates { font-size: 13px; font-weight: 600; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-bottom: 36px; }
+
+  /* BUTTONS */
+  .btn { display: inline-block; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--black); font-family: 'Montserrat', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; padding: 18px 40px; border-radius: 4px; text-decoration: none; transition: all 0.3s; box-shadow: 0 0 30px rgba(201,162,39,0.2); }
+  .btn:hover { box-shadow: 0 0 50px rgba(230,195,90,0.5); transform: translateY(-2px); }
+
+  /* SECTIONS */
+  section { position: relative; z-index: 1; padding: 80px 24px; max-width: 720px; margin: 0 auto; }
+  .center { text-align: center; }
+  .section-label { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--gold); margin-bottom: 24px; display: block; }
+  h2 { font-family: 'Cormorant Garamond', serif; font-size: clamp(28px, 5vw, 44px); font-weight: 700; line-height: 1.2; color: var(--offwhite); margin-bottom: 28px; }
+  h2 em { color: var(--gold-light); font-style: italic; }
+  p { color: rgba(244,241,232,0.75); margin-bottom: 20px; font-size: 16px; }
+  p strong { color: var(--offwhite); font-weight: 600; }
+
+  .highlight-box { border: 1px solid rgba(201,162,39,0.2); border-radius: 8px; padding: 40px 32px; background: rgba(15,59,46,0.15); text-align: center; margin: 40px 0; }
+  .highlight-box p { margin: 0; font-size: 17px; font-style: italic; color: rgba(244,241,232,0.85); }
+
+  .tag { display: inline-block; background: rgba(31,111,74,0.2); border: 1px solid rgba(31,111,74,0.4); color: var(--gold-light); font-size: 12px; font-weight: 700; letter-spacing: 1.5px; padding: 6px 16px; border-radius: 4px; margin: 6px 4px; text-transform: uppercase; }
+
+  /* TREATMENTS GRID */
+  .treatments-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 40px; }
+  @media(max-width:480px) { .treatments-grid { grid-template-columns: 1fr; } }
+  .treatment-card { border: 1px solid rgba(201,162,39,0.15); border-radius: 6px; padding: 24px 20px; background: rgba(15,59,46,0.1); transition: border-color 0.3s; }
+  .treatment-card:hover { border-color: rgba(201,162,39,0.35); }
+  .treatment-card .icon { font-size: 20px; margin-bottom: 12px; }
+  .treatment-card h4 { font-size: 13px; font-weight: 600; color: var(--gold-light); margin-bottom: 6px; }
+  .treatment-card p { font-size: 13px; margin: 0; color: rgba(244,241,232,0.6); }
+
+  /* THEMES LIST */
+  .themes-list { list-style: none; margin-top: 32px; }
+  .themes-list li { display: flex; align-items: flex-start; gap: 16px; padding: 18px 0; border-bottom: 1px solid rgba(201,162,39,0.1); color: rgba(244,241,232,0.8); font-size: 15px; }
+  .themes-list li:last-child { border-bottom: none; }
+  .themes-list li::before { content: '◆'; color: var(--gold); font-size: 8px; margin-top: 6px; flex-shrink: 0; }
+
+  /* TESTIMONIALS */
+  .testimonials { text-align: center; }
+  .testimonials-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 48px; }
+  @media(max-width:540px) { .testimonials-grid { grid-template-columns: 1fr; } }
+  .testimonial-card { border: 1px solid rgba(201,162,39,0.15); border-radius: 8px; overflow: hidden; background: rgba(15,59,46,0.08); transition: border-color 0.3s, transform 0.3s; }
+  .testimonial-card:hover { border-color: rgba(201,162,39,0.35); transform: translateY(-4px); }
+  .testimonial-card img { width: 100%; height: auto; display: block; object-fit: cover; }
+  .testimonial-card.featured { grid-column: 1 / -1; max-width: 480px; margin: 0 auto; }
+
+  /* THERAPISTS */
+  .therapists { text-align: center; }
+  .therapist-photo { width: 100%; max-width: 480px; margin: 0 auto 40px; border-radius: 8px; overflow: hidden; border: 1px solid rgba(201,162,39,0.2); position: relative; }
+  .therapist-photo img { width: 100%; height: auto; display: block; object-fit: cover; }
+  .therapist-photo::after { content: ''; position: absolute; bottom: 0; left: 0; width: 100%; height: 80px; background: linear-gradient(to bottom, transparent, rgba(11,11,11,0.6)); }
+  .therapist-names { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; margin-top: 32px; }
+  .therapist-card { border: 1px solid rgba(201,162,39,0.25); border-radius: 6px; padding: 20px 28px; background: rgba(15,59,46,0.1); font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 600; color: var(--offwhite); }
+
+  /* VALUE */
+  .comparison { background: rgba(15,59,46,0.12); border: 1px solid rgba(201,162,39,0.15); border-radius: 8px; padding: 40px 32px; margin: 40px 0; }
+  .comparison-row { display: flex; justify-content: space-between; align-items: center; padding: 12px 0; border-bottom: 1px solid rgba(201,162,39,0.1); font-size: 14px; color: rgba(244,241,232,0.7); }
+  .comparison-row:last-of-type { border-bottom: none; }
+  .comparison-row .price { color: rgba(244,241,232,0.4); text-decoration: line-through; }
+  .price-highlight { position: relative; margin: 40px 0 20px; }
+  .price-highlight::before { content: ''; position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 300px; height: 120px; background: radial-gradient(ellipse, rgba(201,162,39,0.12) 0%, transparent 70%); pointer-events: none; }
+  .price-value { font-family: 'Cormorant Garamond', serif; font-size: clamp(56px, 12vw, 96px); font-weight: 700; color: var(--gold-light); line-height: 1; position: relative; }
+  .price-label { font-size: 13px; letter-spacing: 2px; color: var(--gold); text-transform: uppercase; margin-top: 8px; }
+
+  /* URGENCY */
+  .countdown-box { background: linear-gradient(135deg, rgba(15,59,46,0.3), rgba(11,11,11,0.8)); border: 1px solid rgba(201,162,39,0.3); border-radius: 8px; padding: 40px 32px; margin: 40px 0; }
+  .deadline { font-family: 'Cormorant Garamond', serif; font-size: clamp(32px, 6vw, 52px); font-weight: 700; color: var(--gold-light); }
+
+  /* FIXED WA */
+  .wa-fixed { position: fixed; bottom: 28px; right: 24px; z-index: 1000; background: linear-gradient(135deg, var(--gold), var(--gold-light)); color: var(--black); width: 56px; height: 56px; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 0 30px rgba(201,162,39,0.4); text-decoration: none; transition: all 0.3s; }
+  .wa-fixed:hover { transform: scale(1.1); box-shadow: 0 0 50px rgba(201,162,39,0.6); }
+
+  footer { text-align: center; padding: 60px 24px; border-top: 1px solid rgba(201,162,39,0.15); position: relative; z-index: 1; }
+  footer p { font-size: 13px; color: rgba(244,241,232,0.3); margin: 0; }
+  .spacer { height: 20px; }
+  .bg-section { background: linear-gradient(180deg, transparent 0%, rgba(15,59,46,0.07) 50%, transparent 100%); }
+
+  /* IMG FALLBACK */
+  img { background: rgba(15,59,46,0.2); }
+</style>
+</head>
+<body>
+
+<div id="particles"></div>
+
+<!-- Fixed WhatsApp -->
+<a class="wa-fixed" href="https://wa.me/553284781692?text=Quero%20Participar%20do%20Protocolo" target="_blank" title="Falar no WhatsApp">
+  <svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<!-- BANNER -->
+<div class="banner-top" style="position:relative;z-index:1;">
+  <img src="img/quemconduz.jpg" alt="Protocolo do Dinheiro" onerror="this.style.display='none'">
+</div>
+
+<!-- HERO -->
+<div class="hero">
+  <span class="badge">09 a 22 de março · Inscrições até 08/03</span>
+  <h1>Protocolo do<br><span>Dinheiro</span></h1>
+  <p class="subtitle">14 dias para quebrar pactos de escassez e recalibrar sua frequência financeira</p>
+  <p class="dates">Com Aline Kosuzinski · Ana Angélica · Cris Geyer</p>
+  <a class="btn" href="https://wa.me/553284781692?text=Quero%20Participar%20do%20Protocolo" target="_blank">Quero Participar do Protocolo</a>
+</div>
+
+<div class="divider"></div>
+
+<!-- TRUTH -->
+<section class="center">
+  <span class="section-label">A verdade que precisa ser dita</span>
+  <h2>Você não tem problema<br>com dinheiro.</h2>
+  <p>Você tem <strong>vínculos invisíveis com a escassez.</strong></p>
+  <p>Votos inconscientes. Pactos energéticos. Lealdades familiares. Medos herdados. Crenças repetidas por gerações.</p>
+  <div class="highlight-box">
+    <p>Dinheiro não flui onde há conflito interno.<br>E programação só muda com <em>liberação profunda.</em></p>
+  </div>
+  <p>Você tenta manifestar. Faz cursos. Afirma. Visualiza. Mas algo trava. Escassez não é falta de esforço — é <strong>programação energética.</strong></p>
+</section>
+
+<div class="divider"></div>
+
+<!-- WHAT IS -->
+<section class="center bg-section">
+  <span class="section-label">O que é</span>
+  <h2>Um intensivo de <em>14 dias consecutivos</em></h2>
+  <p>De 09/03 a 22/03 você estará em um grupo exclusivo recebendo tratamentos energéticos e espirituais direcionados. Não é aula. <strong>É campo ativo.</strong></p>
+  <div class="spacer"></div>
+  <div>
+    <span class="tag">Quebrar pactos de escassez</span>
+    <span class="tag">Dissolver votos inconscientes</span>
+    <span class="tag">Liberar memórias limitantes</span>
+    <span class="tag">Reorganizar frequência vibracional</span>
+    <span class="tag">Ativar prosperidade com coerência</span>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <span class="section-label">Resultados reais</span>
+  <h2>Eles estavam<br><em>como você</em></h2>
+  <p>Pessoas reais que transformaram sua relação com o dinheiro após o Protocolo.</p>
+  <div class="testimonials-grid">
+    <div class="testimonial-card">
+      <img src="img/depoimento1.jpg" alt="Depoimento 1" loading="lazy">
+    </div>
+    <div class="testimonial-card">
+      <img src="img/depoimento2.jpg" alt="Depoimento 2" loading="lazy">
+    </div>
+    <div class="testimonial-card">
+      <img src="img/depoimento3.jpg" alt="Depoimento 3" loading="lazy">
+    </div>
+    <div class="testimonial-card">
+      <img src="img/depoimento4.jpg" alt="Depoimento 4" loading="lazy">
+    </div>
+    <div class="testimonial-card">
+      <img src="img/depoimento5.jpg" alt="Depoimento 5" loading="lazy">
+    </div>
+    <div class="testimonial-card featured">
+      <img src="img/depoimento6.jpg" alt="Depoimento 6" loading="lazy">
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- HOW IT WORKS -->
+<section>
+  <span class="section-label center" style="display:block;text-align:center">Como funciona</span>
+  <h2 style="text-align:center">Três terapeutas atuando<br><em>simultaneamente</em> no seu campo</h2>
+  <div class="treatments-grid">
+    <div class="treatment-card"><div class="icon">◈</div><h4>Mesa Radiônica</h4><p>Raio da Prosperidade</p></div>
+    <div class="treatment-card"><div class="icon">✦</div><h4>Mandala da Riqueza</h4><p>Ativação geométrica sagrada</p></div>
+    <div class="treatment-card"><div class="icon">◉</div><h4>Apometria Coletiva</h4><p>Liberação de vínculos</p></div>
+    <div class="treatment-card"><div class="icon">◊</div><h4>Vivência DNB</h4><p>Desprogramação Neurobiológica</p></div>
+    <div class="treatment-card"><div class="icon">☽</div><h4>Câmara Siriana</h4><p>Recalibração de frequência</p></div>
+    <div class="treatment-card"><div class="icon">∞</div><h4>Liberação Emocional</h4><p>Ativações conforme o campo</p></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- THEMES -->
+<section>
+  <span class="section-label">O que será trabalhado</span>
+  <h2>Você não precisa identificar<br>o <em>bloqueio.</em></h2>
+  <p>Nós conduzimos a liberação.</p>
+  <ul class="themes-list">
+    <li>Medo de prosperar</li>
+    <li>Culpa por ganhar mais</li>
+    <li>Padrões familiares de escassez</li>
+    <li>Autossabotagem financeira</li>
+    <li>Dificuldade em manter dinheiro</li>
+    <li>Bloqueios energéticos inconscientes</li>
+  </ul>
+</section>
+
+<div class="divider"></div>
+
+<!-- THERAPISTS -->
+<section class="therapists bg-section">
+  <span class="section-label">Quem conduz</span>
+  <h2>Especialistas em<br><em>campo energético</em></h2>
+  <div class="therapist-photo">
+    <img src="https://drive.google.com/uc?id=1rA86iL228SzefJ3ifr5cy0tNojf3BWFN" alt="Aline Kosuzinski, Ana Angélica e Cris Geyer" loading="lazy">
+  </div>
+  <div class="therapist-names">
+    <div class="therapist-card">Aline Kosuzinski</div>
+    <div class="therapist-card">Ana Angélica</div>
+    <div class="therapist-card">Cris Geyer</div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- VALUE -->
+<section class="center">
+  <span class="section-label">Ancoragem de valor</span>
+  <h2>Para entender o que<br>está <em>incluído</em></h2>
+  <div class="comparison">
+    <div class="comparison-row"><span>Apometria individual</span><span class="price">R$ 270,00</span></div>
+    <div class="comparison-row"><span>Mesa de Desprogramação Neurobiológica</span><span class="price">R$ 350,00</span></div>
+    <div class="comparison-row"><span>Atendimentos energéticos (×4)</span><span class="price">R$ 600,00+</span></div>
+    <div class="comparison-row"><span>14 dias · 3 terapeutas · campo coletivo</span><span class="price">incalculável</span></div>
+  </div>
+  <p style="color:rgba(244,241,232,0.5);font-size:13px;letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Tudo isso por apenas</p>
+  <div class="price-highlight">
+    <div class="price-value">R$ 67</div>
+    <p class="price-label">pagamento único · acesso imediato</p>
+  </div>
+  <p style="font-style:italic;color:rgba(244,241,232,0.55);font-size:14px;">Isso não é preço de mercado. É uma oportunidade estratégica.</p>
+  <div class="spacer"></div>
+  <a class="btn" href="https://wa.me/553284781692?text=Quero%20Participar%20do%20Protocolo" target="_blank">Quero Participar do Protocolo</a>
+</section>
+
+<div class="divider"></div>
+
+<!-- RESULTS -->
+<section class="center bg-section">
+  <span class="section-label">Resultado esperado</span>
+  <h2>Ao final dos 14 dias</h2>
+  <ul class="themes-list" style="max-width:480px;margin:32px auto 0;">
+    <li>Clareza financeira</li>
+    <li>Redução da autossabotagem</li>
+    <li>Segurança ao cobrar o que vale</li>
+    <li>Abertura para oportunidades</li>
+    <li>Coerência vibracional com prosperidade</li>
+  </ul>
+  <div class="highlight-box" style="margin-top:40px;">
+    <p><em>Prosperidade é frequência sustentada.</em></p>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- URGENCY -->
+<section class="center">
+  <span class="section-label">Atenção</span>
+  <h2>O grupo será <em>fechado.</em><br>Não haverá entrada após o início.</h2>
+  <div class="countdown-box">
+    <p style="font-size:13px;letter-spacing:2px;text-transform:uppercase;color:var(--gold);margin-bottom:16px;">Inscrições encerram em</p>
+    <div class="deadline">08 de março</div>
+    <p style="margin-top:16px;font-size:14px;color:rgba(244,241,232,0.6);">Após essa data o grupo inicia e não haverá novas entradas.</p>
+  </div>
+  <p style="margin-bottom:40px;">Se você sente que é o momento de quebrar padrões financeiros, <strong>essa é a janela.</strong></p>
+  <a class="btn" href="https://wa.me/553284781692?text=Quero%20Participar%20do%20Protocolo" target="_blank">Quero Participar Agora</a>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOR WHO NOT -->
+<section class="center">
+  <span class="section-label">Para quem não é</span>
+  <ul class="themes-list" style="max-width:480px;margin:24px auto;">
+    <li style="color:rgba(244,241,232,0.5);">Quem busca milagre instantâneo</li>
+    <li style="color:rgba(244,241,232,0.5);">Quem não assume responsabilidade</li>
+    <li style="color:rgba(244,241,232,0.5);">Quem quer apenas curiosidade espiritual</li>
+  </ul>
+  <div class="highlight-box">
+    <p><strong style="color:var(--gold-light);">É para quem está pronta para mudança estrutural.</strong></p>
+  </div>
+  <div class="spacer"></div>
+  <a class="btn" href="https://wa.me/553284781692?text=Quero%20Participar%20do%20Protocolo" target="_blank">Quero Participar Agora</a>
+</section>
+
+<footer>
+  <p>Protocolo do Dinheiro · 09 a 22 de março · R$ 67,00</p>
+  <p style="margin-top:8px;">Aline Kosuzinski · Ana Angélica · Cris Geyer</p>
+</footer>
+
+<script>
+  const container = document.getElementById('particles');
+  for (let i = 0; i < 28; i++) {
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const sz = Math.random() * 3 + 1;
+    p.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random()*100}%;animation-duration:${Math.random()*20+15}s;animation-delay:${Math.random()*20}s;`;
+    container.appendChild(p);
+  }
+</script>
+</body>
+</html>
